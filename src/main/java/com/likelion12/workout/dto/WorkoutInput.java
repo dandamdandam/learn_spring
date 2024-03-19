@@ -2,13 +2,13 @@ package com.likelion12.workout.dto;
 
 public class WorkoutInput {
     private String exerciseName;
-    private Integer duration;
+    private String duration;
     private String content;
 
     public String getExerciseName() {
         return exerciseName;
     }
-    public Integer getDuration() {
+    public String getDuration() {
         return duration;
     }
     public String getContent() {

@@ -30,7 +30,7 @@ public class WorkoutService {
         newData.id = getNextId();
         newData.date = LocalDateTime.now();
         newData.exerciseName = workoutInput.getExerciseName();
-        newData.duration = workoutInput.getDuration()!=null ? workoutInput.getDuration() : 0;
+        newData.duration = workoutInput.getDuration();
         newData.content = workoutInput.getContent();
 
         // newData 저장 및 저장된 객체 리턴
@@ -105,7 +105,7 @@ public class WorkoutService {
 class Workout{
     public Long id;
     public String exerciseName;
-    public Integer duration;
+    public String duration;
     public LocalDateTime date;
     public String content;
 

@@ -21,6 +21,9 @@ public class WorkoutController {
 
     @PostMapping()
     public ResponseEntity<WorkoutOutput> create(@RequestBody WorkoutInput workoutInput){
+        if(workoutInput.getExerciseName() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         WorkoutOutput result = workoutService.create(workoutInput);
 
         return new ResponseEntity<>(result, HttpStatus.CREATED);
@@ -33,6 +36,9 @@ public class WorkoutController {
 
     @PutMapping("/{id}")
     public ResponseEntity<WorkoutOutput> update(@PathVariable(value="id") Long id, @RequestBody WorkoutInput workoutInput){
+        if(workoutInput.getExerciseName() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         WorkoutOutput result = workoutService.update(id, workoutInput);
 
         return new ResponseEntity<>(result, HttpStatus.CREATED);

@@ -50,22 +50,6 @@ public class WorkoutService {
         }
         return result;
     }
-    /**
-     * 페이지 단위로 운동기록을 리턴
-     *
-     * @param howMany 한 페이지에 들어가는 운동기록의 수
-     * @param pageNum 페이지번호
-     * @return WorkoutOutput List
-     */
-    public List<WorkoutOutput> findPart(Integer howMany, Integer pageNum){
-        List<WorkoutOutput> result = new ArrayList<>();
-
-        int endNum = howMany*pageNum + pageNum;
-        for(int i=endNum - pageNum;i < endNum; i++){
-            result.add(workoutsRepository.get(i).toWorkoutOutput());
-        }
-        return result;
-    }
 
     /**
      * 운동기록 수정

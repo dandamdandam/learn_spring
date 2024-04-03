@@ -60,8 +60,8 @@ public class WorkoutService {
     public List<WorkoutOutput> findPart(Integer howMany, Integer pageNum){
         List<WorkoutOutput> result = new ArrayList<>();
 
-        int endNum = howMany*pageNum + pageNum;
-        for(int i=endNum - pageNum;i < endNum; i++){
+        int endNum = howMany*pageNum + howMany;
+        for(int i=endNum - howMany;i < endNum && i < workoutsRepository.size(); i++){
             result.add(workoutsRepository.get(i).toWorkoutOutput());
         }
         return result;

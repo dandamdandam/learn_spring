@@ -21,7 +21,7 @@ public class WorkoutController {
 
     @PostMapping()
     public ResponseEntity<WorkoutOutput> create(@RequestBody WorkoutInput workoutInput){
-        if(workoutInput.getExerciseName() == null){
+        if(workoutInput.getExerciseName().isEmpty()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         WorkoutOutput result = workoutService.create(workoutInput);
@@ -33,10 +33,16 @@ public class WorkoutController {
     public ResponseEntity<List<WorkoutOutput>> findAll(){
         return new ResponseEntity<>(workoutService.findAll(), HttpStatus.OK);
     }
+    @GetMapping("/page")
+    public ResponseEntity<List<WorkoutOutput>> findPart(
+            @RequestParam(value="howMany") Integer howMany,
+            @RequestParam(value="pageNum") Integer pageNum){
+        return new ResponseEntity<>(workoutService.findPart(howMany, pageNum), HttpStatus.OK);
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<WorkoutOutput> update(@PathVariable(value="id") Long id, @RequestBody WorkoutInput workoutInput){
-        if(workoutInput.getExerciseName() == null){
+        if(workoutInput.getExerciseName().isEmpty()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         WorkoutOutput result = workoutService.update(id, workoutInput);

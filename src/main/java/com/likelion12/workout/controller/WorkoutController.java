@@ -16,8 +16,10 @@ import java.util.List;
 @CrossOrigin(origins="*")
 public class WorkoutController {
 
-    @Autowired
-    WorkoutService workoutService;
+    private final WorkoutService workoutService;
+    public WorkoutController(WorkoutService workoutService){
+        this.workoutService = workoutService;
+    }
 
     @PostMapping()
     public ResponseEntity<WorkoutOutput> create(@RequestBody WorkoutInput workoutInput){

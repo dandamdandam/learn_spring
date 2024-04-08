@@ -2,6 +2,7 @@ package com.likelion12.workout.controller;
 
 import com.likelion12.workout.dto.WorkoutInput;
 import com.likelion12.workout.dto.WorkoutOutput;
+import com.likelion12.workout.dto.WorkoutPartOutput;
 import com.likelion12.workout.service.WorkoutService;
 
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,7 @@ public class WorkoutController {
         return new ResponseEntity<>(workoutService.findAll(), HttpStatus.OK);
     }
     @GetMapping("/page")
-    public ResponseEntity<List<WorkoutOutput>> findPart(
+    public ResponseEntity<WorkoutPartOutput> findPart(
             @RequestParam(value="howMany") Integer howMany,
             @RequestParam(value="pageNum") Integer pageNum){
         return new ResponseEntity<>(workoutService.findPart(howMany, pageNum), HttpStatus.OK);

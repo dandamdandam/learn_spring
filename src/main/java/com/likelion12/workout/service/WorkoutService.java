@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.likelion12.workout.dto.WorkoutPartOutput;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -57,14 +58,17 @@ public class WorkoutService {
      * @param pageNum 페이지번호
      * @return WorkoutOutput List
      */
-    public List<WorkoutOutput> findPart(Integer howMany, Integer pageNum){
+    public WorkoutPartOutput findPart(Integer howMany, Integer pageNum){
         List<WorkoutOutput> result = new ArrayList<>();
 
         int endNum = howMany*pageNum + howMany;
         for(int i=endNum - howMany;i < endNum && i < workoutsRepository.size(); i++){
             result.add(workoutsRepository.get(i).toWorkoutOutput());
         }
-        return result;
+        return new WorkoutPartOutput(
+                result,
+                howMany==0 ? 0 : workoutsRepository.size()/howMany + (workoutsRepository.size()%howMany==0 ? 0:1)
+        );
     }
 
     /**

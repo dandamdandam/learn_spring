@@ -139,16 +139,6 @@
     
     ```
     {
-    	workoutLogs: [
-    		{
-    			id: int(long),
-    			exerciseName: String,
-    			duration: String,
-    			date: String(LocalDateTime),
-    			content: String
-    		},
-    		...
-    	],
-    	maxPage: int
+    	wo수
     }
     ```

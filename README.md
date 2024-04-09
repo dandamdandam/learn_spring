@@ -139,6 +139,16 @@
     
     ```
     {
-    	wo수
+    	workoutLogs: [
+    		{
+    			id: int(long),
+    			exerciseName: String,
+    			duration: String,
+    			date: String(LocalDateTime),
+    			content: String
+    		},
+    		...
+    	],
+    	maxPage: int -> 반환할 수 있는 최대 페이지의 개수
     }
     ```

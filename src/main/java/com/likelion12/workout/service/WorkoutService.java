@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.likelion12.workout.dto.WorkoutPartOutput;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -49,6 +50,25 @@ public class WorkoutService {
             result.add(i.toWorkoutOutput());
         }
         return result;
+    }
+    /**
+     * 페이지 단위로 운동기록을 리턴
+     *
+     * @param howMany 한 페이지에 들어가는 운동기록의 수
+     * @param pageNum 페이지번호
+     * @return WorkoutOutput List
+     */
+    public WorkoutPartOutput findPart(Integer howMany, Integer pageNum){
+        List<WorkoutOutput> result = new ArrayList<>();
+
+        int endNum = howMany*pageNum + howMany;
+        for(int i=endNum - howMany;i < endNum && i < workoutsRepository.size(); i++){
+            result.add(workoutsRepository.get(i).toWorkoutOutput());
+        }
+        return new WorkoutPartOutput(
+                result,
+                howMany==0 ? 0 : workoutsRepository.size()/howMany + (workoutsRepository.size()%howMany==0 ? 0:1)
+        );
     }
 
     /**

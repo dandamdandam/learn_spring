@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.likelion12.workout.dto.WorkoutPartOutput;
+import com.likelion12.workout.model.Workout;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -115,21 +116,5 @@ public class WorkoutService {
             }
         }
         return null;
-    }
-}
-
-/**
- * 데이터베이스에 저장될 객체
- * (Entity라고 불리며 일반적으로 model 폴더 내에 존재)
- */
-class Workout{
-    public Long id;
-    public String exerciseName;
-    public String duration;
-    public LocalDateTime date;
-    public String content;
-
-    public WorkoutOutput toWorkoutOutput(){
-        return new WorkoutOutput(this.id, this.exerciseName, this.duration, this.date, this.content);
     }
 }

@@ -9,6 +9,9 @@ import java.util.List;
 
 import com.likelion12.workout.dto.WorkoutPartOutput;
 import com.likelion12.workout.model.Workout;
+import com.likelion12.workout.repository.WorkoutRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,6 +23,10 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class WorkoutService {
     private static final List<Workout> workoutsRepository = new ArrayList<>();      // 임시 데이터베이스
+    private final WorkoutRepository workoutRepository;
+    public WorkoutService(WorkoutRepository workoutRepository){
+        this.workoutRepository = workoutRepository;
+    }
 
     /**
      * 운동기록 저장
@@ -29,14 +36,13 @@ public class WorkoutService {
     public WorkoutOutput create(WorkoutInput workoutInput){
         // workoutInput(유저에게 받은 데이터 객체) -> workout[newData](데이터베이스에 저장될 객체)
         Workout newData = new Workout();
-        newData.id = getNextId();
         newData.date = LocalDateTime.now();
         newData.exerciseName = workoutInput.getExerciseName();
         newData.duration = workoutInput.getDuration();
         newData.content = workoutInput.getContent();
 
         // newData 저장 및 저장된 객체 리턴
-        workoutsRepository.add(newData);
+        workoutRepository.save(newData);
         return newData.toWorkoutOutput();
     }
 
@@ -47,8 +53,8 @@ public class WorkoutService {
     public List<WorkoutOutput> findAll(){
         // 데이터베이스의 모든 정보를 읽고 유저에게 리턴할 데이터(workoutOutput)로 맞춰 변환해 리턴
         List<WorkoutOutput> result = new ArrayList<>();
-        for(Workout i: workoutsRepository){
-            result.add(i.toWorkoutOutput());
+        for (Workout workout : workoutRepository.findAll()) {
+            result.add(workout.toWorkoutOutput());
         }
         return result;
     }
@@ -61,14 +67,16 @@ public class WorkoutService {
      */
     public WorkoutPartOutput findPart(Integer howMany, Integer pageNum){
         List<WorkoutOutput> result = new ArrayList<>();
-
-        int endNum = howMany*pageNum + howMany;
-        for(int i=endNum - howMany;i < endNum && i < workoutsRepository.size(); i++){
-            result.add(workoutsRepository.get(i).toWorkoutOutput());
+        if(howMany==0){
+            return new WorkoutPartOutput(result, 0);
+        }
+        Pageable pageable = PageRequest.of(pageNum, howMany);
+        for(Workout workout: workoutRepository.findAll(pageable).getContent()){
+            result.add(workout.toWorkoutOutput());
         }
         return new WorkoutPartOutput(
                 result,
-                howMany==0 ? 0 : workoutsRepository.size()/howMany + (workoutsRepository.size()%howMany==0 ? 0:1)
+                (int) workoutRepository.count()/howMany + (workoutRepository.count()%howMany==0 ? 0:1)
         );
     }
 
@@ -80,13 +88,15 @@ public class WorkoutService {
      */
     public WorkoutOutput update(Long id, WorkoutInput workoutInput){
         // id에 해당하는 운동기록 조회
-        Workout data = findById(id);
-        if(data==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, id+" not found");    // id에 해당하는 workout을 찾을 수 없을 때
+        Workout data = workoutRepository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, id+" not found"));
 
         // 수정될 내용 적용 및 리턴
         if(workoutInput.getExerciseName()!=null) data.exerciseName = workoutInput.getExerciseName();
         if(workoutInput.getDuration()!=null) data.duration = workoutInput.getDuration();
         if(workoutInput.getContent()!=null) data.content = workoutInput.getContent();
+        workoutRepository.save(data);
         return data.toWorkoutOutput();
     }
 
@@ -96,25 +106,11 @@ public class WorkoutService {
      */
     public void delete(Long id){
         // id에 해당하는 운동기록 조회
-        Workout data = findById(id);
-        if(data==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, id+" not found");
+        Workout data = workoutRepository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, id+" not found"));
 
         // 삭제
-        workoutsRepository.remove(data);
-    }
-
-    private long getNextId(){
-        if(workoutsRepository.isEmpty()) return 0;
-
-        Workout lastData = workoutsRepository.get(workoutsRepository.size()-1);
-        return lastData.id+1;
-    }
-    private Workout findById(Long id){
-        for(Workout i: workoutsRepository){
-            if(id.equals(i.id)){
-                return i;
-            }
-        }
-        return null;
+        workoutRepository.delete(data);
     }
 }
